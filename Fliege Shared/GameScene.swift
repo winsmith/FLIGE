@@ -8,12 +8,10 @@
 import SpriteKit
 
 class GameScene: SKScene {
-    
-    
-    fileprivate var label : SKLabelNode?
-    fileprivate var spinnyNode : SKLabelNode?
+    fileprivate var spinnyNode : SKSpriteNode?
+    fileprivate var poopNode : SKSpriteNode?
 
-    fileprivate var flies: [SKLabelNode] = []
+    fileprivate var flies: [SKSpriteNode] = []
     
     class func newGameScene() -> GameScene {
         // Load 'GameScene.sks' as an SKScene.
@@ -29,25 +27,10 @@ class GameScene: SKScene {
     }
     
     func setUpScene() {
-        physicsWorld.gravity = .zero
+        physicsWorld.gravity = CGVector(dx: 0, dy: -0.1)
 
-        // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//fly") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
-        }
-        
-        // Create shape node to use during mouse interaction
-        self.spinnyNode = self.childNode(withName: "//fly") as? SKLabelNode
-        
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-
-        }
+        self.poopNode = self.childNode(withName: "//poopNode") as? SKSpriteNode
+        self.spinnyNode = self.childNode(withName: "//fly") as? SKSpriteNode
     }
     
     #if os(watchOS)
@@ -61,8 +44,9 @@ class GameScene: SKScene {
     #endif
 
     func makeSpinny(at pos: CGPoint, color: SKColor) {
-        if let spinny = self.spinnyNode?.copy() as! SKLabelNode? {
+        if let spinny = self.spinnyNode?.copy() as! SKSpriteNode? {
             spinny.position = pos
+            spinny.alpha = 1
             spinny.physicsBody = SKPhysicsBody(circleOfRadius: 1)
             self.addChild(spinny)
             flies.append(spinny)
@@ -73,7 +57,7 @@ class GameScene: SKScene {
         // Called before each frame is rendered
 
         flies.forEach { fly in
-            fly.physicsBody?.applyForce(CGVector.init(dx: CGFloat(Double.random(in: -1...1)), dy: CGFloat(Double.random(in: -1...1))))
+            fly.physicsBody?.applyForce(CGVector.init(dx: CGFloat(Double.random(in: -1...1)), dy: CGFloat(Double.random(in: 0...0.2))))
         }
     }
 }
