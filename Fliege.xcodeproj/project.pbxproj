@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DC17671325FBB19100DC3E76 /* TrailParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = DC17671225FBB19100DC3E76 /* TrailParticle.sks */; };
+		DC17671425FBB19100DC3E76 /* TrailParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = DC17671225FBB19100DC3E76 /* TrailParticle.sks */; };
 		DCB0F38C25F94E5B0065E251 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB0F38B25F94E5B0065E251 /* AppDelegate.swift */; };
 		DCB0F38E25F94E5B0065E251 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB0F38D25F94E5B0065E251 /* GameViewController.swift */; };
 		DCB0F39125F94E5B0065E251 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCB0F38F25F94E5B0065E251 /* Main.storyboard */; };
@@ -25,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DC17671225FBB19100DC3E76 /* TrailParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TrailParticle.sks; sourceTree = "<group>"; };
 		DCB0F38025F94E5B0065E251 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
 		DCB0F38125F94E5B0065E251 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		DCB0F38225F94E5B0065E251 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -76,6 +79,7 @@
 			children = (
 				DCB0F38025F94E5B0065E251 /* Actions.sks */,
 				DCB0F38125F94E5B0065E251 /* GameScene.sks */,
+				DC17671225FBB19100DC3E76 /* TrailParticle.sks */,
 				DCB0F38225F94E5B0065E251 /* GameScene.swift */,
 				DCB0F38325F94E5B0065E251 /* Assets.xcassets */,
 			);
@@ -193,6 +197,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC17671325FBB19100DC3E76 /* TrailParticle.sks in Resources */,
 				DCB0F3A725F94E5B0065E251 /* GameScene.sks in Resources */,
 				DCB0F39125F94E5B0065E251 /* Main.storyboard in Resources */,
 				DCB0F3A525F94E5B0065E251 /* Actions.sks in Resources */,
@@ -206,6 +211,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCB0F3A225F94E5B0065E251 /* Main.storyboard in Resources */,
+				DC17671425FBB19100DC3E76 /* TrailParticle.sks in Resources */,
 				DCB0F3A825F94E5B0065E251 /* GameScene.sks in Resources */,
 				DCB0F3AC25F94E5B0065E251 /* Assets.xcassets in Resources */,
 				DCB0F3A625F94E5B0065E251 /* Actions.sks in Resources */,

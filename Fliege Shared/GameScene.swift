@@ -10,7 +10,6 @@ import SpriteKit
 class GameScene: SKScene {
     fileprivate var spinnyNode : SKSpriteNode?
     fileprivate var poopNode : SKSpriteNode?
-
     fileprivate var flies: [SKSpriteNode] = []
     
     class func newGameScene() -> GameScene {
@@ -48,6 +47,13 @@ class GameScene: SKScene {
             spinny.position = pos
             spinny.alpha = 1
             spinny.physicsBody = SKPhysicsBody(circleOfRadius: 1)
+
+            if let particles = SKEmitterNode(fileNamed: "TrailParticle.sks") {
+                particles.position = spinny.position
+                particles.targetNode = self
+                spinny.addChild(particles)
+            }
+
             self.addChild(spinny)
             flies.append(spinny)
         }
@@ -56,7 +62,10 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
 
+        guard let poopNode = poopNode else { return }
+
         flies.forEach { fly in
+            fly.position.distance(to: poopNode.position)
             fly.physicsBody?.applyForce(CGVector.init(dx: CGFloat(Double.random(in: -1...1)), dy: CGFloat(Double.random(in: 0...0.2))))
         }
     }
@@ -93,3 +102,8 @@ extension GameScene {
 }
 #endif
 
+extension CGPoint {
+    func distance(to point: CGPoint) -> CGFloat {
+        return abs(CGFloat(hypotf(Float(point.x - x), Float(point.y - y))))
+    }
+}
