@@ -8,8 +8,9 @@
 import SpriteKit
 
 class GameScene: SKScene {
-    fileprivate var spinnyNode : SKSpriteNode?
-    fileprivate var poopNode : SKSpriteNode?
+    fileprivate var spinnyNode: SKSpriteNode?
+    fileprivate var poopNode: SKSpriteNode?
+    fileprivate var circleCenterNode: SKNode?
     fileprivate var flies: [SKSpriteNode] = []
     
     class func newGameScene() -> GameScene {
@@ -27,7 +28,9 @@ class GameScene: SKScene {
     
     func setUpScene() {
         physicsWorld.gravity = CGVector(dx: 0, dy: -0.1)
+        physicsWorld.speed = 0.5
 
+        self.circleCenterNode = self.childNode(withName: "//circleCenterNode") as? SKNode
         self.poopNode = self.childNode(withName: "//poopNode") as? SKSpriteNode
         self.spinnyNode = self.childNode(withName: "//fly") as? SKSpriteNode
     }
@@ -47,6 +50,8 @@ class GameScene: SKScene {
             spinny.position = pos
             spinny.alpha = 1
             spinny.physicsBody = SKPhysicsBody(circleOfRadius: 1)
+            spinny.physicsBody?.mass = 0.0001
+            spinny.physicsBody?.linearDamping = 0.5
 
             if let particles = SKEmitterNode(fileNamed: "TrailParticle.sks") {
                 particles.position = spinny.position
@@ -62,11 +67,23 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
 
-        guard let poopNode = poopNode else { return }
+        guard let circleCenterNode = circleCenterNode else { return }
 
         flies.forEach { fly in
-            fly.position.distance(to: poopNode.position)
-            fly.physicsBody?.applyForce(CGVector.init(dx: CGFloat(Double.random(in: -1...1)), dy: CGFloat(Double.random(in: 0...0.2))))
+            let idealX: CGFloat = circleCenterNode.position.x
+            let idealY: CGFloat = circleCenterNode.position.y
+
+            let forceX: CGFloat = min(1, (idealX - fly.position.x) * 0.01 * CGFloat(Float.random(in: 0...1))) + CGFloat(Float.random(in: -3...3))
+            let forceY: CGFloat = min(1, (idealY - fly.position.y) * 0.005 * CGFloat(Float.random(in: 0...1))) + CGFloat(Float.random(in: -0.5...0.5))
+
+            fly.physicsBody?.applyForce(CGVector.init(dx: forceX, dy: forceY))
+
+            if let physicsBody = fly.physicsBody {
+                let value = physicsBody.velocity.dx * -0.001
+                let rotate = SKAction.rotate(toAngle: value, duration: 0.1)
+
+                fly.run(rotate)
+            }
         }
     }
 }
