@@ -59,6 +59,11 @@ class GameScene: SKScene {
                 spinny.addChild(particles)
             }
 
+            let audioNode = SKAudioNode(fileNamed: "sssssss.m4a")
+            audioNode.isPositional = true
+            audioNode.autoplayLooped = true
+            spinny.addChild(audioNode)
+
             self.addChild(spinny)
             flies.append(spinny)
         }
