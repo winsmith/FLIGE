@@ -30,9 +30,18 @@ class GameScene: SKScene {
         physicsWorld.gravity = CGVector(dx: 0, dy: -0.1)
         physicsWorld.speed = 0.5
 
-        self.circleCenterNode = self.childNode(withName: "//circleCenterNode") as? SKNode
+        self.circleCenterNode = self.childNode(withName: "//circleCenterNode")
         self.poopNode = self.childNode(withName: "//poopNode") as? SKSpriteNode
         self.spinnyNode = self.childNode(withName: "//fly") as? SKSpriteNode
+
+        let wait = SKAction.wait(forDuration: 5) //change countdown speed here
+        let block = SKAction.run({
+            [unowned self] in
+            makeSpinny(at: CGPoint(x: -500, y: 500))
+        })
+        let sequence = SKAction.sequence([wait,block])
+
+        run(SKAction.repeatForever(sequence), withKey: "countdown")
     }
     
     #if os(watchOS)
@@ -45,7 +54,7 @@ class GameScene: SKScene {
     }
     #endif
 
-    func makeSpinny(at pos: CGPoint, color: SKColor) {
+    func makeSpinny(at pos: CGPoint) {
         if let spinny = self.spinnyNode?.copy() as! SKSpriteNode? {
             spinny.position = pos
             spinny.alpha = 1
@@ -96,17 +105,25 @@ class GameScene: SKScene {
 #if os(iOS) || os(tvOS)
 // Touch-based event handling
 extension GameScene {
-
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for t in touches {
+            let node = self.atPoint(t.location(in: self))
+            if node.name == "fly" {
+                flies.removeAll(where: {  $0 == node })
+                node.removeFromParent()
+            }
+        }
+    }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
-            self.makeSpinny(at: t.location(in: self), color: SKColor.red)
+//            self.makeSpinny(at: t.location(in: self), color: SKColor.red)
         }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
-            self.makeSpinny(at: t.location(in: self), color: SKColor.red)
+//            self.makeSpinny(at: t.location(in: self), color: SKColor.red)
         }
     }
     
@@ -117,8 +134,12 @@ extension GameScene {
 #if os(OSX)
 // Mouse-based event handling
 extension GameScene {
+    override func mouseDown(with event: NSEvent) {
+
+    }
+
     override func mouseUp(with event: NSEvent) {
-        self.makeSpinny(at: event.location(in: self), color: SKColor.red)
+//        self.makeSpinny(at: event.location(in: self))
     }
 
 }

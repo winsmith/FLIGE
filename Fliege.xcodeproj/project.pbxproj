@@ -401,7 +401,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.breakthesystem.Fliege;
+				PRODUCT_BUNDLE_IDENTIFIER = org.breakthesystem.flige;
 				PRODUCT_NAME = Fliege;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -422,7 +422,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.breakthesystem.Fliege;
+				PRODUCT_BUNDLE_IDENTIFIER = org.breakthesystem.flige;
 				PRODUCT_NAME = Fliege;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
