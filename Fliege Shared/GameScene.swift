@@ -15,7 +15,7 @@ enum GameStatus {
 }
 
 class GameScene: SKScene {
-    fileprivate var spinnyNode: SKSpriteNode?
+    fileprivate var flyPrototypeNode: SKNode?
     fileprivate var poopNode: SKSpriteNode?
     fileprivate var circleCenterNode: SKNode?
     fileprivate var scoreLabelNode: SKLabelNode?
@@ -23,7 +23,7 @@ class GameScene: SKScene {
     fileprivate var gameOverScreenOverlay: SKSpriteNode?
     fileprivate var carlaNode: SKSpriteNode?
     
-    fileprivate var flies: [SKSpriteNode] = []
+    fileprivate var flies: [SKNode] = []
     
     fileprivate var score: Int = 0
     fileprivate var gameStatus: GameStatus = .titleScreen
@@ -47,7 +47,7 @@ class GameScene: SKScene {
 
         self.circleCenterNode = self.childNode(withName: "//circleCenterNode")
         self.poopNode = self.childNode(withName: "//poopNode") as? SKSpriteNode
-        self.spinnyNode = self.childNode(withName: "//fly") as? SKSpriteNode
+        self.flyPrototypeNode = self.childNode(withName: "//fly")
         self.scoreLabelNode = self.childNode(withName: "//scoreLabel") as? SKLabelNode
         self.titleScreenOverlay = self.childNode(withName: "//titleScreen") as? SKSpriteNode
         self.gameOverScreenOverlay = self.childNode(withName: "//gameOverScreen") as? SKSpriteNode
@@ -59,10 +59,10 @@ class GameScene: SKScene {
         scoreLabelNode?.horizontalAlignmentMode = .right
         scoreLabelNode?.position = CGPoint(x: 980/2, y: 700/2)
 
-        let wait = SKAction.wait(forDuration: 5) // time between new flies appearing
+        let wait = SKAction.wait(forDuration: 1) // time between new flies appearing
         let block = SKAction.run({
             [unowned self] in
-            makeSpinny(at: CGPoint(x: -500, y: 500))
+            makeNewFly(at: CGPoint(x: -500, y: 500))
         })
         let sequence = SKAction.sequence([wait,block])
 
@@ -84,7 +84,7 @@ class GameScene: SKScene {
     }
     #endif
 
-    func makeSpinny(at pos: CGPoint) {
+    func makeNewFly(at pos: CGPoint) {
         if gameStatus == .titleScreen && flies.count > 4 {
             return
         }
@@ -94,26 +94,29 @@ class GameScene: SKScene {
             return
         }
         
-        if let spinny = self.spinnyNode?.copy() as! SKSpriteNode? {
-            spinny.position = pos
-            spinny.alpha = 1
-            spinny.physicsBody = SKPhysicsBody(circleOfRadius: 1)
-            spinny.physicsBody?.mass = 0.0001
-            spinny.physicsBody?.linearDamping = 0.5
+        if let newFly = self.flyPrototypeNode?.copy() as! SKNode? {
+            newFly.alpha = 1
+            newFly.position = pos
+            newFly.physicsBody = SKPhysicsBody(circleOfRadius: 1)
+            newFly.physicsBody?.mass = 0.0001
+            newFly.physicsBody?.linearDamping = 0.5
 
             if let particles = SKEmitterNode(fileNamed: "TrailParticle.sks") {
-                particles.position = spinny.position
+                particles.name = "flyTrail"
+                particles.position = newFly.position
                 particles.targetNode = self
-                spinny.addChild(particles)
+                newFly.addChild(particles)
+                particles.position = CGPoint(x: 0, y: 0)
             }
 
             let audioNode = SKAudioNode(fileNamed: "sssssss.m4a")
             audioNode.isPositional = true
             audioNode.autoplayLooped = true
-            spinny.addChild(audioNode)
+            newFly.addChild(audioNode)
+            audioNode.position = CGPoint(x: 0, y: 0)
 
-            self.addChild(spinny)
-            flies.append(spinny)
+            self.addChild(newFly)
+            flies.append(newFly)
         }
     }
     
@@ -174,10 +177,13 @@ extension GameScene {
         }
         
         for t in touches {
-            let node = self.atPoint(t.location(in: self))
-            if node.name == "fly" {
-                flies.removeAll(where: {  $0 == node })
-                node.removeFromParent()
+            let nodes = self.nodes(at: t.location(in: self))
+            let flyNodes = nodes.filter { $0.name == "fly" }
+            let closeFlyNodes = flyNodes.filter { $0.position.distance(to: t.location(in: self)) < 60 }
+            
+            for flyNode in closeFlyNodes {
+                flies.removeAll(where: {  $0 == flyNode })
+                flyNode.removeFromParent()
                 
                 let newScore = 100 / (flies.count + 1)
                 score += newScore
@@ -195,7 +201,7 @@ extension GameScene {
             gravity.run(gravitySequence)
             
             // move little carla to position
-            carlaNode?.run(SKAction.move(to: t.location(in: self), duration: 0.1))
+//            carlaNode?.run(SKAction.move(to: t.location(in: self), duration: 0.1))
         }
     }
 }
