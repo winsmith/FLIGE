@@ -7,11 +7,24 @@
 
 import SpriteKit
 
+enum GameStatus {
+    case playing
+    case titleScreen
+    case gameOver
+}
+
 class GameScene: SKScene {
     fileprivate var spinnyNode: SKSpriteNode?
     fileprivate var poopNode: SKSpriteNode?
     fileprivate var circleCenterNode: SKNode?
+    fileprivate var scoreLabelNode: SKLabelNode?
+    fileprivate var titleScreenOverlay: SKSpriteNode?
+    fileprivate var gameOverScreenOverlay: SKSpriteNode?
+    
     fileprivate var flies: [SKSpriteNode] = []
+    
+    fileprivate var score: Int = 0
+    fileprivate var gameStatus: GameStatus = .titleScreen
     
     class func newGameScene() -> GameScene {
         // Load 'GameScene.sks' as an SKScene.
@@ -33,8 +46,14 @@ class GameScene: SKScene {
         self.circleCenterNode = self.childNode(withName: "//circleCenterNode")
         self.poopNode = self.childNode(withName: "//poopNode") as? SKSpriteNode
         self.spinnyNode = self.childNode(withName: "//fly") as? SKSpriteNode
+        self.scoreLabelNode = self.childNode(withName: "//scoreLabel") as? SKLabelNode
+        self.titleScreenOverlay = self.childNode(withName: "//titleScreen") as? SKSpriteNode
+        self.gameOverScreenOverlay = self.childNode(withName: "//gameOverScreen") as? SKSpriteNode
+        
+        scoreLabelNode?.horizontalAlignmentMode = .right
+        scoreLabelNode?.position = CGPoint(x: 980/2, y: 700/2)
 
-        let wait = SKAction.wait(forDuration: 5) //change countdown speed here
+        let wait = SKAction.wait(forDuration: 5) // time between new flies appearing
         let block = SKAction.run({
             [unowned self] in
             makeSpinny(at: CGPoint(x: -500, y: 500))
@@ -42,6 +61,11 @@ class GameScene: SKScene {
         let sequence = SKAction.sequence([wait,block])
 
         run(SKAction.repeatForever(sequence), withKey: "countdown")
+        
+        let titleFadeInSequence = SKAction.sequence([SKAction.fadeOut(withDuration: 0), SKAction.fadeIn(withDuration: 1)])
+        titleScreenOverlay?.run(titleFadeInSequence)
+        
+        gameOverScreenOverlay?.run(SKAction.fadeOut(withDuration: 0))
     }
     
     #if os(watchOS)
@@ -55,6 +79,15 @@ class GameScene: SKScene {
     #endif
 
     func makeSpinny(at pos: CGPoint) {
+        if gameStatus == .titleScreen && flies.count > 4 {
+            return
+        }
+        
+        if gameStatus == .playing && flies.count > 20 {
+            gameStatus = .gameOver
+            return
+        }
+        
         if let spinny = self.spinnyNode?.copy() as! SKSpriteNode? {
             spinny.position = pos
             spinny.alpha = 1
@@ -79,9 +112,22 @@ class GameScene: SKScene {
     }
     
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
-
         guard let circleCenterNode = circleCenterNode else { return }
+        
+        let fadeOut = SKAction.fadeOut(withDuration: 0.3)
+        let fadeIn = SKAction.fadeIn(withDuration: 0.3)
+        
+        switch gameStatus {
+        case .playing:
+            titleScreenOverlay?.run(fadeOut)
+            gameOverScreenOverlay?.run(fadeOut)
+        case .titleScreen:
+            titleScreenOverlay?.run(fadeIn)
+            gameOverScreenOverlay?.run(fadeOut)
+        case .gameOver:
+            titleScreenOverlay?.run(fadeOut)
+            gameOverScreenOverlay?.run(fadeIn)
+        }
 
         flies.forEach { fly in
             let idealX: CGFloat = circleCenterNode.position.x
@@ -106,28 +152,40 @@ class GameScene: SKScene {
 // Touch-based event handling
 extension GameScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        switch gameStatus {
+        case .playing:
+            break
+        case .titleScreen:
+            gameStatus = .playing
+        case .gameOver:
+            gameStatus = .titleScreen
+            score = 0
+            flies.forEach { $0.removeFromParent() }
+            flies.removeAll()
+        }
+        
         for t in touches {
             let node = self.atPoint(t.location(in: self))
             if node.name == "fly" {
                 flies.removeAll(where: {  $0 == node })
                 node.removeFromParent()
+                
+                let newScore = 100 / (flies.count + 1)
+                score += newScore
+                
+                scoreLabelNode?.text = "\(score)"
             }
+            
+            // Gravity impulse to simulate flies shying away
+            let gravity = SKFieldNode.radialGravityField()
+            gravity.strength = -30
+            self.addChild(gravity)
+            gravity.position = t.location(in: self)
+            
+            let gravitySequence = SKAction.sequence([SKAction.fadeOut(withDuration: 0.4), SKAction.removeFromParent()])
+            gravity.run(gravitySequence)
         }
     }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches {
-//            self.makeSpinny(at: t.location(in: self), color: SKColor.red)
-        }
-    }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches {
-//            self.makeSpinny(at: t.location(in: self), color: SKColor.red)
-        }
-    }
-    
-   
 }
 #endif
 
