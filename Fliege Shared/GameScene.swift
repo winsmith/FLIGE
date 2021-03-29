@@ -201,7 +201,7 @@ extension GameScene {
             gravity.run(gravitySequence)
             
             // move little carla to position
-//            carlaNode?.run(SKAction.move(to: t.location(in: self), duration: 0.1))
+            carlaNode?.run(SKAction.move(to: CGPoint(x: t.location(in: self).x, y: carlaNode!.position.y), duration: 0.1))
         }
     }
 }
