@@ -41,6 +41,28 @@ class GameScene: SKScene {
         return scene
     }
     
+    fileprivate func setupFlyGeneration() {
+        let wait = SKAction.wait(forDuration: 1) // time between new flies appearing
+        let block = SKAction.run({
+            [unowned self] in
+            makeNewFly(at: CGPoint(x: Int.random(in: -500...500), y: 500))
+        })
+        let sequence = SKAction.sequence([wait,block])
+        
+        run(SKAction.repeatForever(sequence), withKey: "countdown")
+    }
+    
+    fileprivate func setupFlyUpdater() {
+        let wait = SKAction.wait(forDuration: 0.02)
+        let block = SKAction.run({
+            [unowned self] in
+            updateFlies()
+        })
+        let sequence = SKAction.sequence([wait,block])
+        
+        run(SKAction.repeatForever(sequence), withKey: "lakshfl")
+    }
+    
     func setUpScene() {
         physicsWorld.gravity = CGVector(dx: 0, dy: -0.1)
         physicsWorld.speed = 0.5
@@ -59,14 +81,8 @@ class GameScene: SKScene {
         scoreLabelNode?.horizontalAlignmentMode = .right
         scoreLabelNode?.position = CGPoint(x: 980/2, y: 700/2)
 
-        let wait = SKAction.wait(forDuration: 1) // time between new flies appearing
-        let block = SKAction.run({
-            [unowned self] in
-            makeNewFly(at: CGPoint(x: -500, y: 500))
-        })
-        let sequence = SKAction.sequence([wait,block])
-
-        run(SKAction.repeatForever(sequence), withKey: "countdown")
+        setupFlyGeneration()
+        setupFlyUpdater()
         
         let titleFadeInSequence = SKAction.sequence([SKAction.fadeOut(withDuration: 0), SKAction.fadeIn(withDuration: 1)])
         titleScreenOverlay?.run(titleFadeInSequence)
@@ -121,8 +137,6 @@ class GameScene: SKScene {
     }
     
     override func update(_ currentTime: TimeInterval) {
-        guard let circleCenterNode = circleCenterNode else { return }
-        
         let fadeOut = SKAction.fadeOut(withDuration: 0.3)
         let fadeIn = SKAction.fadeIn(withDuration: 0.3)
         
@@ -137,7 +151,11 @@ class GameScene: SKScene {
             titleScreenOverlay?.run(fadeOut)
             gameOverScreenOverlay?.run(fadeIn)
         }
-
+    }
+    
+    private func updateFlies() {
+        guard let circleCenterNode = circleCenterNode else { return }
+        
         flies.forEach { fly in
             let idealX: CGFloat = circleCenterNode.position.x
             let idealY: CGFloat = circleCenterNode.position.y
@@ -201,7 +219,7 @@ extension GameScene {
             gravity.run(gravitySequence)
             
             // move little carla to position
-            carlaNode?.run(SKAction.move(to: CGPoint(x: t.location(in: self).x, y: carlaNode!.position.y), duration: 0.1))
+            carlaNode?.run(SKAction.move(to: CGPoint(x: t.location(in: self).x, y: carlaNode!.position.y), duration: 0.2))
         }
     }
 }
