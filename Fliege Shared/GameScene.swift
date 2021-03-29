@@ -77,9 +77,6 @@ class GameScene: SKScene {
         
         (self.childNode(withName: "//titleScreenLabel") as? SKLabelNode)?.text = NSLocalizedString("titleScreenLabel", comment: "")
         (self.childNode(withName: "//gameOverScreenLabel") as? SKLabelNode)?.text = NSLocalizedString("gameOverScreenLabel", comment: "")
-        
-        scoreLabelNode?.horizontalAlignmentMode = .right
-        scoreLabelNode?.position = CGPoint(x: 980/2, y: 700/2)
 
         setupFlyGeneration()
         setupFlyUpdater()
@@ -207,7 +204,7 @@ extension GameScene {
                 flies.removeAll(where: {  $0 == flyNode })
                 flyNode.removeFromParent()
                 
-                let newScore = 100 / (flies.count + 1)
+                let newScore = 1000 / (flies.count + 1)
                 score += newScore
                 
                 scoreLabelNode?.text = "\(score)"
