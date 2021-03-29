@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B2A51CE26126AFE001C6456 /* TelemetryClient in Frameworks */ = {isa = PBXBuildFile; productRef = 2B2A51CD26126AFE001C6456 /* TelemetryClient */; };
 		DC17671325FBB19100DC3E76 /* TrailParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = DC17671225FBB19100DC3E76 /* TrailParticle.sks */; };
 		DC17671425FBB19100DC3E76 /* TrailParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = DC17671225FBB19100DC3E76 /* TrailParticle.sks */; };
 		DC17671625FBC89400DC3E76 /* sssssss.m4a in Resources */ = {isa = PBXBuildFile; fileRef = DC17671525FBC89400DC3E76 /* sssssss.m4a */; };
@@ -54,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B2A51CE26126AFE001C6456 /* TelemetryClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +141,9 @@
 			dependencies = (
 			);
 			name = "Fliege iOS";
+			packageProductDependencies = (
+				2B2A51CD26126AFE001C6456 /* TelemetryClient */,
+			);
 			productName = "Fliege iOS";
 			productReference = DCB0F38825F94E5B0065E251 /* Fliege.app */;
 			productType = "com.apple.product-type.application";
@@ -186,6 +191,9 @@
 				Base,
 			);
 			mainGroup = DCB0F37A25F94E5A0065E251;
+			packageReferences = (
+				2B2A51CC26126AFE001C6456 /* XCRemoteSwiftPackageReference "SwiftClient" */,
+			);
 			productRefGroup = DCB0F38925F94E5B0065E251 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -394,6 +402,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = FL4V655A94;
 				INFOPLIST_FILE = "Fliege iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
@@ -415,6 +424,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = FL4V655A94;
 				INFOPLIST_FILE = "Fliege iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
@@ -508,6 +518,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2B2A51CC26126AFE001C6456 /* XCRemoteSwiftPackageReference "SwiftClient" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AppTelemetry/SwiftClient.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.11;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2B2A51CD26126AFE001C6456 /* TelemetryClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2B2A51CC26126AFE001C6456 /* XCRemoteSwiftPackageReference "SwiftClient" */;
+			productName = TelemetryClient;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DCB0F37B25F94E5A0065E251 /* Project object */;
 }

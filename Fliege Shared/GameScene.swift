@@ -6,6 +6,7 @@
 //
 
 import SpriteKit
+import TelemetryClient
 
 enum GameStatus {
     case playing
@@ -154,14 +155,17 @@ extension GameScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         switch gameStatus {
         case .playing:
+            TelemetryManager.send("tap")
             break
         case .titleScreen:
             gameStatus = .playing
+            TelemetryManager.send("starGame")
         case .gameOver:
             gameStatus = .titleScreen
             score = 0
             flies.forEach { $0.removeFromParent() }
             flies.removeAll()
+            TelemetryManager.send("restartGame")
         }
         
         for t in touches {

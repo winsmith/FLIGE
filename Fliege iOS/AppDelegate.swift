@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import TelemetryClient
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,6 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        let configuration = TelemetryManagerConfiguration(appID: "90F475D6-F666-4E35-9FB4-47E94BF397DD")
+        TelemetryManager.initialize(with: configuration)
+        TelemetryManager.send("appLaunched")
         return true
     }
 
