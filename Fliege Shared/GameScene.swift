@@ -42,7 +42,7 @@ class GameScene: SKScene {
     }
     
     fileprivate func setupFlyGeneration() {
-        let wait = SKAction.wait(forDuration: 1) // time between new flies appearing
+        let wait = SKAction.wait(forDuration: 4) // time between new flies appearing
         let block = SKAction.run({
             [unowned self] in
             makeNewFly(at: CGPoint(x: Int.random(in: -500...500), y: 500))
