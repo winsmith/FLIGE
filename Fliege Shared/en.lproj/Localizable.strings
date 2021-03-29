@@ -1,0 +1,10 @@
+/* 
+  Strings.strings
+  Fliege
+
+  Created by Daniel Jilg on 29.03.21.
+  
+*/
+
+"titleScreenLabel" = "A game by Carla and her Uncle. Tap flies to catch them.";
+"gameOverScreenLabel" = "Too many flies. Tap to play again.";

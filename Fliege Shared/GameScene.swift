@@ -51,6 +51,9 @@ class GameScene: SKScene {
         self.titleScreenOverlay = self.childNode(withName: "//titleScreen") as? SKSpriteNode
         self.gameOverScreenOverlay = self.childNode(withName: "//gameOverScreen") as? SKSpriteNode
         
+        (self.childNode(withName: "//titleScreenLabel") as? SKLabelNode)?.text = NSLocalizedString("titleScreenLabel", comment: "")
+        (self.childNode(withName: "//gameOverScreenLabel") as? SKLabelNode)?.text = NSLocalizedString("gameOverScreenLabel", comment: "")
+        
         scoreLabelNode?.horizontalAlignmentMode = .right
         scoreLabelNode?.position = CGPoint(x: 980/2, y: 700/2)
 

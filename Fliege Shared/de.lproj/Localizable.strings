@@ -1,0 +1,10 @@
+/* 
+  Strings.strings
+  Fliege
+
+  Created by Daniel Jilg on 29.03.21.
+  
+*/
+
+"titleScreenLabel" = "Ein Spiel von Carla und ihrem Onkel. Tipp auf die Fliegen!";
+"gameOverScreenLabel" = "Zu viele Fliegen! Tippe zum neu starten";
