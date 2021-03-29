@@ -21,6 +21,7 @@ class GameScene: SKScene {
     fileprivate var scoreLabelNode: SKLabelNode?
     fileprivate var titleScreenOverlay: SKSpriteNode?
     fileprivate var gameOverScreenOverlay: SKSpriteNode?
+    fileprivate var carlaNode: SKSpriteNode?
     
     fileprivate var flies: [SKSpriteNode] = []
     
@@ -50,6 +51,7 @@ class GameScene: SKScene {
         self.scoreLabelNode = self.childNode(withName: "//scoreLabel") as? SKLabelNode
         self.titleScreenOverlay = self.childNode(withName: "//titleScreen") as? SKSpriteNode
         self.gameOverScreenOverlay = self.childNode(withName: "//gameOverScreen") as? SKSpriteNode
+        self.carlaNode = self.childNode(withName: "//carlaNode") as? SKSpriteNode
         
         (self.childNode(withName: "//titleScreenLabel") as? SKLabelNode)?.text = NSLocalizedString("titleScreenLabel", comment: "")
         (self.childNode(withName: "//gameOverScreenLabel") as? SKLabelNode)?.text = NSLocalizedString("gameOverScreenLabel", comment: "")
@@ -191,6 +193,9 @@ extension GameScene {
             
             let gravitySequence = SKAction.sequence([SKAction.fadeOut(withDuration: 0.4), SKAction.removeFromParent()])
             gravity.run(gravitySequence)
+            
+            // move little carla to position
+            carlaNode?.run(SKAction.move(to: t.location(in: self), duration: 0.1))
         }
     }
 }
