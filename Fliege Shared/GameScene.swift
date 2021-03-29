@@ -110,6 +110,10 @@ class GameScene: SKScene {
             return
         }
         
+        if gameStatus == .gameOver {
+            return
+        }
+        
         if let newFly = self.flyPrototypeNode?.copy() as! SKNode? {
             newFly.alpha = 1
             newFly.position = pos
