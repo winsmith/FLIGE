@@ -28,6 +28,15 @@ class GameScene: SKScene {
     fileprivate var score: Int = 0
     fileprivate var gameStatus: GameStatus = .titleScreen
     
+    fileprivate var lastFlyGeneratedAt: Date = Date()
+    fileprivate var gameStartedAt: Date = Date()
+    fileprivate var timeBetweenFlies: TimeInterval = 5
+    
+    private var shouldMakeNewFly: Bool {
+        let timeSinceLastFly = -lastFlyGeneratedAt.timeIntervalSinceNow
+        return timeSinceLastFly >= timeBetweenFlies
+    }
+    
     class func newGameScene() -> GameScene {
         // Load 'GameScene.sks' as an SKScene.
         guard let scene = SKScene(fileNamed: "GameScene") as? GameScene else {
@@ -42,10 +51,10 @@ class GameScene: SKScene {
     }
     
     fileprivate func setupFlyGeneration() {
-        let wait = SKAction.wait(forDuration: 4) // time between new flies appearing
+        let wait = SKAction.wait(forDuration: 0.1)
         let block = SKAction.run({
             [unowned self] in
-            makeNewFly(at: CGPoint(x: Int.random(in: -500...500), y: 500))
+            makeNewFly()
         })
         let sequence = SKAction.sequence([wait,block])
         
@@ -97,7 +106,7 @@ class GameScene: SKScene {
     }
     #endif
 
-    func makeNewFly(at pos: CGPoint) {
+    func makeNewFly() {
         if gameStatus == .titleScreen && flies.count > 4 {
             return
         }
@@ -110,6 +119,10 @@ class GameScene: SKScene {
         if gameStatus == .gameOver {
             return
         }
+        
+        guard shouldMakeNewFly else { return }
+        
+        let pos = CGPoint(x: Int.random(in: -500...500), y: 500)
         
         if let newFly = self.flyPrototypeNode?.copy() as! SKNode? {
             newFly.alpha = 1
@@ -134,6 +147,8 @@ class GameScene: SKScene {
 
             self.addChild(newFly)
             flies.append(newFly)
+            
+            lastFlyGeneratedAt = Date()
         }
     }
     
@@ -182,7 +197,6 @@ extension GameScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         switch gameStatus {
         case .playing:
-            TelemetryManager.send("tap")
             break
         case .titleScreen:
             gameStatus = .playing
@@ -192,8 +206,11 @@ extension GameScene {
             score = 0
             flies.forEach { $0.removeFromParent() }
             flies.removeAll()
+            gameStartedAt = Date()
             TelemetryManager.send("restartGame")
         }
+        
+        var hitAFly: Bool = false
         
         for t in touches {
             let nodes = self.nodes(at: t.location(in: self))
@@ -201,11 +218,16 @@ extension GameScene {
             let closeFlyNodes = flyNodes.filter { $0.position.distance(to: t.location(in: self)) < 60 }
             
             for flyNode in closeFlyNodes {
+                hitAFly = true
+                
                 flies.removeAll(where: {  $0 == flyNode })
                 flyNode.removeFromParent()
                 
                 let newScore = 1000 / (flies.count + 1)
                 score += newScore
+                
+                timeBetweenFlies = timeBetweenFlies * 0.95
+                print(timeBetweenFlies)
                 
                 scoreLabelNode?.text = "\(score)"
             }
@@ -221,6 +243,9 @@ extension GameScene {
             
             // move little carla to position
             carlaNode?.run(SKAction.move(to: CGPoint(x: t.location(in: self).x, y: carlaNode!.position.y), duration: 0.2))
+            
+            // Send tap to telemetry because it's my new toy and I love playing with it and the server now should withstand a huge load
+            TelemetryManager.send("tap", for: nil, with: ["splat": hitAFly ? "splat" : "swoosh"])
         }
     }
 }
