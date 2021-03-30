@@ -29,7 +29,6 @@ class GameScene: SKScene {
     fileprivate var gameStatus: GameStatus = .titleScreen
     
     fileprivate var lastFlyGeneratedAt: Date = Date()
-    fileprivate var gameStartedAt: Date = Date()
     fileprivate var timeBetweenFlies: TimeInterval = 5
     
     private var shouldMakeNewFly: Bool {
@@ -206,7 +205,7 @@ extension GameScene {
             score = 0
             flies.forEach { $0.removeFromParent() }
             flies.removeAll()
-            gameStartedAt = Date()
+            timeBetweenFlies = 5
             TelemetryManager.send("restartGame")
         }
         
